@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apple Slasher 🍎</title>
+    <style>
+        :root {
+            --bg-dark: #070b14; /* Deep dark background */
+            --card-bg: #101624; /* Darker card */
+            --btn-bg: rgba(255, 255, 255, 0.04); /* Transparent glass effect */
+            --text-main: #fff;
+            --premium-gold: #f59e0b;
+        }
+        
+        body { 
+            font-family: 'Inter', -apple-system, sans-serif; 
+            background: var(--bg-dark); 
+            color: var(--text-main); margin: 0; 
+            display: flex; justify-content: center; align-items: center; min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .card { 
+            background: var(--card-bg); 
+            padding: 30px 20px; 
+            border-radius: 28px; 
+            width: 90%; 
+            max-width: 380px; 
+            text-align: center;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.6);
+            border: 1px solid rgba(255,255,255,0.03); /* Subtle border */
+        }
+
+        h2 { 
+            color: var(--premium-gold); 
+            margin: 0 0 30px 0; 
+            font-weight: 700; 
+            font-size: 1.3rem; 
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+
+        .btn-link { 
+            background: var(--btn-bg); 
+            color: var(--text-main); 
+            font-weight: 600; 
+            border: 1px solid rgba(255,255,255,0.06); /* Button border */
+            padding: 16px 20px; 
+            border-radius: 50px; /* Fully rounded */
+            width: 100%; 
+            margin-bottom: 12px;
+            cursor: pointer; 
+            text-transform: uppercase; 
+            transition: all 0.2s ease;
+            display: flex; align-items: center; justify-content: space-between;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+        }
+
+        /* Hover & Active Effects */
+        .btn-link:hover {
+            background: rgba(255, 255, 255, 0.07);
+            border-color: rgba(255,255,255,0.1);
+        }
+
+        .btn-link:active { 
+            transform: scale(0.97); 
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Icons (Lightning and Arrow) */
+        .btn-icon-left {
+            opacity: 0.7;
+            font-size: 1.1rem;
+        }
+        .btn-icon-right {
+            opacity: 0.5;
+            font-size: 1rem;
+        }
+
+        #btnContainer button:last-child { margin-bottom: 0; }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h2><span>🍎</span> APPLE   SLASHER</h2>
+        <div id="btnContainer">
+            <button id="btn1" class="btn-link" onclick="instantRedirect(1)">
+                <span class="btn-icon-left"></span>
+                <span class="btn-text">.</span>
+                <span class="btn-icon-right">❯</span>
+            </button>
+            <button id="btn2" class="btn-link" onclick="instantRedirect(2)">
+                <span class="btn-icon-left"></span>
+                <span class="btn-text">..</span>
+                <span class="btn-icon-right">❯</span>
+            </button>
+            <button id="btn3" class="btn-link" onclick="instantRedirect(3)">
+                <span class="btn-icon-left"></span>
+                <span class="btn-text">...</span>
+                <span class="btn-icon-right">❯</span>
+            </button>
+            <button id="btn4" class="btn-link" onclick="instantRedirect(4)">
+                <span class="btn-icon-left"></span>
+                <span class="btn-text">....</span>
+                <span class="btn-icon-right">❯</span>
+            </button>            
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+        // Tumhari Firebase Config (Wahi purani wali)
+        const firebaseConfig = {
+            apiKey: "AIzaSyDnM9ry5JreqjRXqQVUSiaBzudXuaAF-QI",
+            databaseURL: "https://send-message-b178e-default-rtdb.asia-southeast1.firebasedatabase.app",
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        let buttonData = {};
+
+        // Firebase se data fetch karke buttons update karein
+        onValue(ref(db, 'customButtons'), (snap) => {
+            buttonData = snap.val() || {};
+            for(let i=1; i<=4; i++) {
+                const btn = document.getElementById(`btn${i}`);
+                const btnText = btn.querySelector('.btn-text'); // Text span ko target karein
+                if(buttonData[`b${i}`]) {
+                    btnText.innerText = buttonData[`b${i}`].name;
+                    btn.setAttribute('data-url', buttonData[`b${i}`].link);
+                } else {
+                    btnText.innerText = "Empty Slot"; // Agar data na mile
+                }
+            }
+        });
+
+        // Instant Redirect Function (0.01 sec logic)
+        window.instantRedirect = (id) => {
+            const url = document.getElementById(`btn${id}`).getAttribute('data-url');
+            if(url && url !== "undefined" && url !== "#") {
+                // 0.01 second delay (real instant click feel ke liye)
+                setTimeout(() => {
+                    window.open(url, '_blank');
+                }, 10); 
+            } else {
+                alert("No link available for this button.");
+            }
+        };
+    </script>
+</body>
+</html>
